@@ -24,6 +24,22 @@ go run ./cmd/api
 go run ./cmd/redirect
 ```
 
+## PostgreSQL
+
+Чтобы хранить данные постоянно, подключите PostgreSQL и задайте переменную окружения `DATABASE_URL` для сервиса `storage`.
+
+Пример строки подключения:
+
+```bash
+export DATABASE_URL="postgres://user:password@localhost:5432/shortener?sslmode=disable"
+```
+
+Перед запуском примените схему из `sql/schema.sql`:
+
+```bash
+psql "$DATABASE_URL" -f sql/schema.sql
+```
+
 ## Пример использования
 
 Откройте в браузере `http://localhost:8080` и используйте веб-интерфейс.
@@ -79,7 +95,7 @@ curl -X POST http://localhost:8080/shorten \
 
 ## Ограничения
 
-- Все данные хранятся в памяти (in-memory), при перезапуске сервисов они сбрасываются.
+- Если `DATABASE_URL` не задан, все данные хранятся в памяти (in-memory) и при перезапуске сервисов сбрасываются.
 - Сессии авторизации также не сохраняются между перезапусками.
 
 ## Переменные окружения
@@ -92,3 +108,4 @@ curl -X POST http://localhost:8080/shorten \
 | redirect | `PORT`       | `8081`                |
 | redirect | `STORAGE_URL`| `http://localhost:8082` |
 | storage  | `PORT`       | `8082`                |
+| storage  | `DATABASE_URL` | пусто (in-memory) |

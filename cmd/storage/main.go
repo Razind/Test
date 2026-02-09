@@ -24,7 +24,17 @@ type userRequest struct {
 
 func main() {
 	port := getenv("PORT", "8082")
-	svc := store.NewMemoryStore()
+	dsn := os.Getenv("DATABASE_URL")
+	var svc store.Store
+	if dsn != "" {
+		pg, err := store.NewPostgresStore(dsn)
+		if err != nil {
+			log.Fatalf("failed to connect to postgres: %v", err)
+		}
+		svc = pg
+	} else {
+		svc = store.NewMemoryStore()
+	}
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/health", func(w http.ResponseWriter, _ *http.Request) {

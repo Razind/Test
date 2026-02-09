@@ -32,6 +32,17 @@ type MemoryStore struct {
 	userByEmail map[string]string
 }
 
+type Store interface {
+	CreateUser(email, passwordHash string) (User, error)
+	GetUserByEmail(email string) (User, error)
+	GetUser(id string) (User, error)
+	SaveLink(link Link)
+	GetLink(code string) (Link, error)
+	ListLinksByUser(userID string) []Link
+	DeleteLink(code, userID string) error
+	IncrementClick(code string) error
+}
+
 func NewMemoryStore() *MemoryStore {
 	return &MemoryStore{
 		links:       make(map[string]Link),
@@ -47,7 +58,7 @@ func (s *MemoryStore) CreateUser(email, passwordHash string) (User, error) {
 		return User{}, ErrEmailExists
 	}
 	user := User{
-		ID:           newID(),
+		ID:           NewID(),
 		Email:        email,
 		PasswordHash: passwordHash,
 	}
@@ -134,7 +145,7 @@ func (s *MemoryStore) IncrementClick(code string) error {
 	return nil
 }
 
-func newID() string {
+func NewID() string {
 	buf := make([]byte, 16)
 	_, _ = rand.Read(buf)
 	return hex.EncodeToString(buf)
