@@ -28,6 +28,8 @@ go run ./cmd/redirect
 
 Откройте в браузере `http://localhost:8080` и используйте веб-интерфейс.
 
+В веб-интерфейсе доступны регистрация, авторизация, список ссылок, их удаление и статистика переходов.
+
 ```bash
 curl -X POST http://localhost:8080/shorten \
   -H "Content-Type: application/json" \

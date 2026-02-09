@@ -37,6 +37,7 @@ func main() {
 			http.Error(w, "link not found", http.StatusNotFound)
 			return
 		}
+		incrementClick(storageURL, code)
 		http.Redirect(w, r, link.URL, http.StatusFound)
 	})
 
@@ -60,6 +61,18 @@ func fetchLink(storageURL, code string) (linkResponse, error) {
 		return linkResponse{}, err
 	}
 	return link, nil
+}
+
+func incrementClick(storageURL, code string) {
+	req, err := http.NewRequest(http.MethodPost, fmt.Sprintf("%s/links/%s/click", storageURL, code), nil)
+	if err != nil {
+		return
+	}
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return
+	}
+	_ = resp.Body.Close()
 }
 
 func getenv(key, fallback string) string {
