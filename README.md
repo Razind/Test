@@ -30,6 +30,45 @@ go run ./cmd/redirect
 
 В веб-интерфейсе доступны регистрация, авторизация, список ссылок, их удаление и статистика переходов.
 
+## Основные возможности
+
+- Регистрация и авторизация по email/паролю.
+- Профиль с суммарной статистикой переходов и количеством ссылок.
+- Список ссылок текущего пользователя, удаление ссылок.
+- Счетчик переходов обновляется при переходе по короткой ссылке.
+
+## Примеры API-запросов
+
+Регистрация:
+
+```bash
+curl -X POST http://localhost:8080/register \
+  -H "Content-Type: application/json" \
+  -d '{"email":"user@example.com","password":"secret"}'
+```
+
+Логин:
+
+```bash
+curl -X POST http://localhost:8080/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"user@example.com","password":"secret"}'
+```
+
+Создание короткой ссылки (нужна активная сессия):
+
+```bash
+curl -X POST http://localhost:8080/shorten \
+  -H "Content-Type: application/json" \
+  -d '{"url":"https://example.com"}'
+```
+
+Получение списка ссылок:
+
+```bash
+curl http://localhost:8080/links
+```
+
 ```bash
 curl -X POST http://localhost:8080/shorten \
   -H "Content-Type: application/json" \
@@ -37,6 +76,11 @@ curl -X POST http://localhost:8080/shorten \
 ```
 
 В ответе вернется `short_url` вида `http://localhost:8081/<code>`. Откройте его в браузере, и вы получите редирект на исходный URL.
+
+## Ограничения
+
+- Все данные хранятся в памяти (in-memory), при перезапуске сервисов они сбрасываются.
+- Сессии авторизации также не сохраняются между перезапусками.
 
 ## Переменные окружения
 
