@@ -26,6 +26,8 @@ go run ./cmd/redirect
 
 ## Пример использования
 
+Откройте в браузере `http://localhost:8080` и используйте веб-интерфейс.
+
 ```bash
 curl -X POST http://localhost:8080/shorten \
   -H "Content-Type: application/json" \
