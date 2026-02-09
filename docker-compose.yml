@@ -1,0 +1,52 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: shortener
+      POSTGRES_PASSWORD: shortener
+      POSTGRES_DB: shortener
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./sql/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+
+  storage:
+    build:
+      context: .
+      dockerfile: Dockerfile.storage
+    environment:
+      PORT: 8082
+      DATABASE_URL: postgres://shortener:shortener@db:5432/shortener?sslmode=disable
+    depends_on:
+      - db
+    ports:
+      - "8082:8082"
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    environment:
+      PORT: 8080
+      STORAGE_URL: http://storage:8082
+      BASE_URL: http://localhost:8081
+    depends_on:
+      - storage
+    ports:
+      - "8080:8080"
+
+  redirect:
+    build:
+      context: .
+      dockerfile: Dockerfile.redirect
+    environment:
+      PORT: 8081
+      STORAGE_URL: http://storage:8082
+    depends_on:
+      - storage
+    ports:
+      - "8081:8081"
+
+volumes:
+  pgdata:

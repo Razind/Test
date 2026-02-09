@@ -24,6 +24,19 @@ go run ./cmd/api
 go run ./cmd/redirect
 ```
 
+## Запуск через Docker (одной командой)
+
+Если установлен Docker, можно поднять все сервисы вместе с PostgreSQL одной командой:
+
+```bash
+docker compose up --build
+```
+
+После запуска сервисы будут доступны на тех же портах:
+
+- UI/API: http://localhost:8080
+- Redirect: http://localhost:8081
+
 ## PostgreSQL
 
 Чтобы хранить данные постоянно, подключите PostgreSQL и задайте переменную окружения `DATABASE_URL` для сервиса `storage`.
