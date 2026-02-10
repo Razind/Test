@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Сокращатель ссылок</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <section class="card">
+        <header class="header">
+          <div>
+            <h1>Сокращатель ссылок</h1>
+            <p class="subtitle">Быстро создавайте короткие ссылки и делитесь ими.</p>
+          </div>
+          <div id="profile-actions" class="profile-actions hidden">
+            <span id="profile-email" class="profile-email"></span>
+            <button id="logout-btn" type="button" class="ghost">Выйти</button>
+          </div>
+        </header>
+
+        <section id="auth-section" class="auth-section">
+          <div class="auth-card">
+            <h2>Вход</h2>
+            <form id="login-form" class="form">
+              <label class="label" for="login-email">Email</label>
+              <input id="login-email" type="email" required />
+              <label class="label" for="login-password">Пароль</label>
+              <input id="login-password" type="password" required />
+              <button type="submit">Войти</button>
+            </form>
+          </div>
+          <div class="auth-card">
+            <h2>Регистрация</h2>
+            <form id="register-form" class="form">
+              <label class="label" for="register-email">Email</label>
+              <input id="register-email" type="email" required />
+              <label class="label" for="register-password">Пароль</label>
+              <input id="register-password" type="password" required />
+              <button type="submit">Создать аккаунт</button>
+            </form>
+          </div>
+        </section>
+
+        <section id="profile-section" class="profile-section hidden">
+          <div class="stats">
+            <div class="stat">
+              <span class="stat-label">Всего ссылок</span>
+              <span id="total-links" class="stat-value">0</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Переходов</span>
+              <span id="total-clicks" class="stat-value">0</span>
+            </div>
+          </div>
+
+          <form id="shorten-form" class="form">
+            <label class="label" for="url-input">Введите длинный URL</label>
+            <div class="input-row">
+              <input
+                id="url-input"
+                name="url"
+                type="url"
+                placeholder="https://example.com"
+                required
+                autocomplete="off"
+              />
+              <button type="submit">Сократить</button>
+            </div>
+          </form>
+
+          <div id="result" class="result hidden">
+            <span>Короткая ссылка:</span>
+            <a id="short-url" href="#" target="_blank" rel="noreferrer"></a>
+            <button id="copy-btn" type="button">Скопировать</button>
+          </div>
+
+          <div class="links-header">
+            <h2>Мои ссылки</h2>
+            <button id="refresh-btn" type="button" class="ghost">Обновить</button>
+          </div>
+          <div id="links-list" class="links-list"></div>
+        </section>
+
+        <p id="error" class="error hidden"></p>
+      </section>
+    </main>
+    <script src="/static/app.js" defer></script>
+  </body>
+</html>
