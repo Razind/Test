@@ -26,11 +26,21 @@ go run ./cmd/redirect
 
 ## Запуск через Docker (одной командой)
 
-Если установлен Docker, можно поднять все сервисы вместе с PostgreSQL одной командой:
+Если установлен Docker, можно поднять все сервисы **вместе с PostgreSQL** одной командой:
 
 ```bash
 docker compose up --build
 ```
+
+Compose поднимет контейнер `db` с тестовыми доступами и автоматически применит схему из `sql/schema.sql` при первом старте тома.
+
+Тестовые доступы к БД:
+
+- user: `shortener`
+- password: `shortener`
+- database: `shortener`
+- host внутри docker-сети: `db:5432`
+- host с машины: `localhost:5432`
 
 После запуска сервисы будут доступны на тех же портах:
 
@@ -39,19 +49,19 @@ docker compose up --build
 
 ## PostgreSQL
 
-Чтобы хранить данные постоянно, подключите PostgreSQL и задайте переменную окружения `DATABASE_URL` для сервиса `storage`.
-
-Пример строки подключения:
+В `docker-compose.yml` PostgreSQL уже настроен и подключается к `storage` автоматически через:
 
 ```bash
-export DATABASE_URL="postgres://user:password@localhost:5432/shortener?sslmode=disable"
+postgres://shortener:shortener@db:5432/shortener?sslmode=disable
 ```
 
-Перед запуском примените схему из `sql/schema.sql`:
+Если запускаете `storage` отдельно (без compose), задайте `DATABASE_URL` вручную:
 
 ```bash
-psql "$DATABASE_URL" -f sql/schema.sql
+export DATABASE_URL="postgres://shortener:shortener@localhost:5432/shortener?sslmode=disable"
 ```
+
+Схема базы находится в `sql/schema.sql` (в compose применяется автоматически при первом старте БД-тома).
 
 ## Пример использования
 

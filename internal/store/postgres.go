@@ -1,8 +1,11 @@
 package store
 
 import (
+	"context"
 	"database/sql"
 	"errors"
+	"fmt"
+	"time"
 
 	"github.com/jackc/pgx/v5/pgconn"
 	_ "github.com/jackc/pgx/v5/stdlib"
@@ -17,10 +20,33 @@ func NewPostgresStore(dsn string) (*PostgresStore, error) {
 	if err != nil {
 		return nil, err
 	}
-	if err := db.Ping(); err != nil {
+
+	if err := waitForPostgres(db); err != nil {
 		return nil, err
 	}
 	return &PostgresStore{db: db}, nil
+}
+
+func waitForPostgres(db *sql.DB) error {
+	const (
+		maxAttempts = 20
+		delay       = 2 * time.Second
+	)
+
+	for attempt := 1; attempt <= maxAttempts; attempt++ {
+		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+		err := db.PingContext(ctx)
+		cancel()
+		if err == nil {
+			return nil
+		}
+		if attempt == maxAttempts {
+			return fmt.Errorf("postgres is unavailable after %d attempts: %w", maxAttempts, err)
+		}
+		time.Sleep(delay)
+	}
+
+	return errors.New("postgres connection attempts exhausted")
 }
 
 func (s *PostgresStore) CreateUser(email, passwordHash string) (User, error) {
